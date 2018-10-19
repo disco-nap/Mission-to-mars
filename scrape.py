@@ -22,8 +22,8 @@ def scrape():
     browser.visit(url)
     html = browser.html
     soup = bs(html, 'html.parser')
-    news_title = soup.find('div', class_='content_title').text
-    news_p = soup.find('div', class_='article_teaser_body').text
+    news_title = soup.find('div', class_='content_title').get_text()
+    news_p = soup.find('div', class_='article_teaser_body').get_text()
 
     mars_dict['news_title'] = news_title
     mars_dict['news_p'] = news_p 
@@ -41,7 +41,7 @@ def scrape():
     browser.visit(url3)
     html_weather = browser.html
     soup2 = bs(html_weather, 'html.parser')
-    mars_weather = soup2.find('p', class_='TweetTextSize TweetTextSize--normal js-tweet-text tweet-text').text
+    mars_weather = soup2.find('p', class_='TweetTextSize TweetTextSize--normal js-tweet-text tweet-text').get_text()
     
     mars_dict['mars_weather'] = mars_weather
 

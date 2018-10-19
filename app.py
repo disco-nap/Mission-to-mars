@@ -14,16 +14,16 @@ collection = db.mars_data_update
 
 @app.route("/")
 def home():
-    mars_data = list(db.collection.find())
-    return  render_template('index.html', mars_data=mars_data)
+    mars_dict = list(db.collection.find())
+    return  render_template('index.html', mars_dict=mars_dict)
 
 
 @app.route("/scrape")
 def data_scrape():
     db.collection.remove({})
-    mars_data = scrape.scrape()
-    db.collection.insert_one(mars_data)
-    return  render_template('index.html')
+    mars_dict = scrape.scrape()
+    db.collection.insert_one(mars_dict)
+    return redirect("/", code=302)
 
 if __name__ == "__main__":
     app.run(debug=True)
