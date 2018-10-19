@@ -6,16 +6,18 @@ import pandas as pd
 import time
 from selenium import webdriver
 
-
+#create a MongoClient to the running mongod instance
 def init_browser():
-    executable_path = {"executable_path":"C:\chromedriver_win32\chromedriver"}
+    executable_path = {"executable_path":"chromedriver"}
     return Browser("chrome", **executable_path, headless = False)
 
+#write a function that will execute all of your scraping code from mission_to_mars.ipynb
+#and return one Python dictionary containing all of the scraped data
 def scrape():
     browser = init_browser()
     mars_dict = {}
 
-    #url of page to be scraped
+    #scrape headline and body of most recent NASA Mars article
     url = 'https://mars.nasa.gov/news/'
     browser.visit(url)
     html = browser.html
@@ -26,7 +28,7 @@ def scrape():
     mars_dict['news_title'] = news_title
     mars_dict['news_p'] = news_p 
 
-
+    #scrape featured image from NASA Mars
     url2 = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     browser.visit(url2)
     browser.find_by_id('full_image').click()
@@ -34,7 +36,7 @@ def scrape():
     
     mars_dict['featured_image'] = featured_image_url
 
-
+    #scrape most recent Mars weather upadte from MarsWx twitter
     url3 = 'https://twitter.com/marswxreport?lang=en'
     browser.visit(url3)
     html_weather = browser.html
@@ -43,7 +45,7 @@ def scrape():
     
     mars_dict['mars_weather'] = mars_weather
 
-
+    #scrape table of facts about Mars from space-facts
     url4 = 'https://space-facts.com/mars/'
     mars_table = pd.read_html(url4)
     mars_df = mars_table[0]
@@ -52,7 +54,8 @@ def scrape():
     
     mars_dict['mars_facts'] = mars_facts
 
-
+    #scrape hi-res images of each of 4 Mars' Hemispheres from USGS
+    #save .jpg and hemisphere name in a python list of dictionaries for 'name' and 'image' as keys
     url5 = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
     browser.visit(url5)
     html = browser.html
@@ -96,8 +99,8 @@ def scrape():
     for name, image in zip(hemisphere_names, hemisphere_image):
         hemisphere_dicts.append({"Title": name, "Image_Url": image})
 
-    print(hemisphere_dicts)
+    
     mars_dict['hemisphere_image'] = hemisphere_dicts
 
-
+    #print dictionary containing all scraped data
     return mars_dict

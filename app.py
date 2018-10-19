@@ -3,22 +3,20 @@ import sys
 import pymongo
 import scrape
 
+#create instance of the flask app
 sys.setrecursionlimit(2000)
 app = Flask(__name__)
 
-
-app.config["MONGO_URI"] = "mongodb://localhost:27017/craigslist_app"
-mongo = PyMongo(app)
-
-
+#create mongo connection
 client = pymongo.MongoClient()
 db = client.mars_db
 collection = db.mars_data_update
 
 @app.route("/")
 def home():
-    mars_data = list(db.collection.find())[0]
-    return  render_template('index.html', mars_dict=mars_dict)
+    mars_data = list(db.collection.find())
+    return  render_template('index.html', mars_data=mars_data)
+
 
 @app.route("/scrape")
 def data_scrape():
